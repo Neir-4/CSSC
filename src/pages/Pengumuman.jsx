@@ -1,184 +1,200 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { FaPlus, FaClock, FaUser, FaCalendarAlt } from "react-icons/fa";
+import { FaPlus, FaClock, FaUserTie, FaUserGraduate, FaBullhorn, FaCheckCircle, FaCalendarDay } from "react-icons/fa";
 
 const Pengumuman = () => {
-    const { user } = useAuth();
+    const user = { name: "Yehezkiel", role: "Komting" }; 
+
     const [announcements, setAnnouncements] = useState([]);
     const [showCreateForm, setShowCreateForm] = useState(false);
 
-    // Load announcements from localStorage on component mount
+    // Load Data
     useEffect(() => {
         const savedAnnouncements = localStorage.getItem("cssc-announcements");
         if (savedAnnouncements) {
             setAnnouncements(JSON.parse(savedAnnouncements));
         } else {
-            // Initialize with sample data
             const sampleAnnouncements = [
                 {
                     id: 1,
-                    title: "Wirausaha Digital",
-                    content: "Teman-teman, Wirausaha Digital hari ini pindah ke hari kamis minggu depan yaa..",
+                    title: "Perubahan Jadwal Wirausaha Digital",
+                    content: "Teman-teman, mata kuliah Wirausaha Digital hari ini dipindah ke hari Kamis minggu depan ya. Mohon infokan ke yang lain.",
                     author: "Edric",
                     authorRole: "Komting",
                     subject: "Wirausaha Digital",
-                    date: "31 Oktober 2025",
+                    date: "2025-10-31",
                     time: "07:21",
                     status: "approved"
                 },
                 {
                     id: 2,
-                    title: "Basis Data",
-                    content: "Adik-adik, Basis Data kita undur malam ini jam 8 malam, online ya.",
-                    author: "Dewi Sartika",
+                    title: "Kuliah Pengganti Basis Data",
+                    content: "Assalamualaikum, perkuliahan Basis Data kita adakan nanti malam pukul 20.00 WIB secara Daring (Zoom). Link akan dibagikan 15 menit sebelum mulai.",
+                    author: "Dr. Dewi Sartika",
                     authorRole: "Dosen",
                     subject: "Basis Data",
-                    date: "5 November 2025",
+                    date: "2025-11-05",
                     time: "10:22",
                     status: "approved"
                 },
                 {
                     id: 3,
-                    title: "Wirausaha Digital",
-                    content: "Wirausaha digital tidak masuk hari ini.",
+                    title: "Dosen Tidak Hadir",
+                    content: "Info dari bapak dosen, hari ini beliau berhalangan hadir karena ada rapat di rektorat. Tugas akan dikirim via Google Classroom.",
                     author: "Yehezkiel",
-                    authorRole: "Anggota",
-                    subject: "Wirausaha Digital",
-                    date: "7 November 2025",
-                    time: "10:22",
-                    status: "26 Setuju"
+                    authorRole: "Mahasiswa",
+                    subject: "Kecerdasan Buatan",
+                    date: "2025-11-07",
+                    time: "08:15",
+                    status: "pending"
                 }
             ];
-            setAnnouncements(sampleAnnouncements);
-            localStorage.setItem("cssc-announcements", JSON.stringify(sampleAnnouncements));
+            // Sort by date descending (terbaru diatas)
+            const sorted = sampleAnnouncements.sort((a, b) => new Date(b.date) - new Date(a.date));
+            setAnnouncements(sorted);
+            localStorage.setItem("cssc-announcements", JSON.stringify(sorted));
         }
     }, []);
 
-    const formatDate = (dateString) => {
+    // Format Tanggal Indonesia
+    const formatDateIndo = (dateString) => {
         const date = new Date(dateString);
-        const options = { 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric' 
-        };
-        return date.toLocaleDateString('id-ID', options);
+        return date.toLocaleDateString('id-ID', { 
+            day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' 
+        });
     };
 
-    const getAnnouncementStyle = (authorRole) => {
-        if (authorRole === "Dosen") {
-            return "bg-gradient-to-r from-green-600 to-green-700";
-        } else if (authorRole === "Komting") {
-            return "bg-gradient-to-r from-slate-600 to-slate-700";
-        } else {
-            return "bg-gradient-to-r from-slate-700 to-slate-800";
+    // Style berdasarkan Role
+    const getRoleStyle = (role) => {
+        switch (role) {
+            case "Dosen":
+                return {
+                    border: "border-l-4 border-amber-500",
+                    bg: "bg-amber-50",
+                    badge: "bg-amber-100 text-amber-700",
+                    icon: <FaUserTie />
+                };
+            case "Komting":
+                return {
+                    border: "border-l-4 border-blue-500",
+                    bg: "bg-blue-50",
+                    badge: "bg-blue-100 text-blue-700",
+                    icon: <FaBullhorn />
+                };
+            default: // Mahasiswa
+                return {
+                    border: "border-l-4 border-gray-400",
+                    bg: "bg-white",
+                    badge: "bg-gray-100 text-gray-600",
+                    icon: <FaUserGraduate />
+                };
         }
     };
 
-    const getStatusDisplay = (status, authorRole) => {
-        if (authorRole === "Dosen" || authorRole === "Komting") {
-            return null; // No status needed for approved posts
-        }
-        return (
-            <div className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                {status}
-            </div>
-        );
-    };
-
-    // Group announcements by date
+    // Grouping announcements by date
     const groupedAnnouncements = announcements.reduce((groups, announcement) => {
         const date = announcement.date;
-        if (!groups[date]) {
-            groups[date] = [];
-        }
+        if (!groups[date]) groups[date] = [];
         groups[date].push(announcement);
         return groups;
     }, {});
 
+    const sortedDates = Object.keys(groupedAnnouncements).sort((a, b) => new Date(b) - new Date(a));
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 pt-20 pb-8">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
-                        Pengumuman Terbaru
-                    </h1>
+        <div className="min-h-screen bg-[#f5f5f0] pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="max-w-3xl mx-auto">
+                
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+                    <div>
+                        <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Papan Pengumuman</h1>
+                        <p className="text-gray-500 text-sm">Informasi terbaru seputar perkuliahan dan akademik.</p>
+                    </div>
                     <button
                         onClick={() => setShowCreateForm(true)}
-                        className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-xl flex items-center gap-2 transition-colors shadow-lg"
+                        className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-full font-medium flex items-center gap-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
                     >
-                        <span className="text-yellow-300">Ajukan Pengumuman</span>
-                        <FaPlus className="text-yellow-300" />
+                        <FaPlus className="text-amber-400" />
+                        <span>Buat Pengumuman</span>
                     </button>
                 </div>
 
-                {/* Announcements Container */}
-                <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-3xl p-6 sm:p-8 shadow-2xl">
-                    <div className="space-y-8">
-                        {Object.entries(groupedAnnouncements).map(([date, dateAnnouncements]) => (
-                            <div key={date}>
-                                {/* Date Header */}
-                                <div className="text-center mb-6">
-                                    <div className="text-white font-semibold text-lg bg-black bg-opacity-20 inline-block px-4 py-2 rounded-lg">
-                                        {date}
-                                    </div>
-                                </div>
-
-                                {/* Announcements for this date */}
-                                <div className="space-y-4">
-                                    {dateAnnouncements.map((announcement) => (
-                                        <div
-                                            key={announcement.id}
-                                            className={`${getAnnouncementStyle(announcement.authorRole)} text-white rounded-2xl p-4 sm:p-6 shadow-lg`}
-                                        >
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-yellow-300 font-bold text-lg">
-                                                        {announcement.author}
-                                                    </span>
-                                                    <span className="text-gray-200">•</span>
-                                                    <span className="text-gray-200 text-sm">
-                                                        {announcement.authorRole}
-                                                    </span>
-                                                </div>
-                                                <div className="text-right text-sm text-gray-200">
-                                                    <div className="font-semibold text-white text-lg mb-1">
-                                                        {announcement.subject}
-                                                    </div>
-                                                    <div className="flex items-center gap-1 justify-end">
-                                                        <FaClock className="text-xs" />
-                                                        <span>{announcement.time}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <p className="text-white text-base leading-relaxed mb-3">
-                                                {announcement.content}
-                                            </p>
-
-                                            {/* Status for student submissions */}
-                                            {getStatusDisplay(announcement.status, announcement.authorRole) && (
-                                                <div className="flex justify-end">
-                                                    {getStatusDisplay(announcement.status, announcement.authorRole)}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                {/* Timeline Feed */}
+                <div className="space-y-8">
+                    {sortedDates.map((date) => (
+                        <div key={date} className="relative">
+                            
+                            {/* Sticky Date Divider */}
+                            <div className="sticky top-20 z-10 flex justify-center mb-6">
+                                <div className="bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm px-4 py-1.5 rounded-full flex items-center gap-2 text-sm font-semibold text-gray-600">
+                                    <FaCalendarDay className="text-amber-500" />
+                                    {formatDateIndo(date)}
                                 </div>
                             </div>
-                        ))}
-                    </div>
+
+                            {/* Cards Container */}
+                            <div className="space-y-4">
+                                {groupedAnnouncements[date].map((item) => {
+                                    const style = getRoleStyle(item.authorRole);
+                                    return (
+                                        <div 
+                                            key={item.id} 
+                                            className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 border border-gray-100 ${style.border}`}
+                                        >
+                                            {/* Card Header: Author & Subject */}
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div className="flex items-center gap-3">
+                                                    {/* Avatar */}
+                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${style.badge}`}>
+                                                        {style.icon}
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="font-bold text-gray-900">{item.author}</span>
+                                                            <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${style.badge}`}>
+                                                                {item.authorRole}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                                                            <span>{item.time} WIB</span>
+                                                            <span>•</span>
+                                                            <span className="font-medium text-gray-500">{item.subject}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Verified Icon for Dosen */}
+                                                {item.authorRole === "Dosen" && (
+                                                    <div className="text-blue-500" title="Terverifikasi Dosen">
+                                                        <FaCheckCircle />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Content */}
+                                            <div className="pl-[52px]">
+                                                <h3 className="font-bold text-gray-800 text-lg mb-1">{item.title}</h3>
+                                                <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
+                                                    {item.content}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
-                {/* Create Announcement Modal */}
+                {/* Create Modal */}
                 {showCreateForm && (
                     <CreateAnnouncementModal
                         user={user}
                         onClose={() => setShowCreateForm(false)}
                         onSubmit={(newAnnouncement) => {
-                            const updatedAnnouncements = [newAnnouncement, ...announcements];
-                            setAnnouncements(updatedAnnouncements);
-                            localStorage.setItem("cssc-announcements", JSON.stringify(updatedAnnouncements));
+                            const updated = [newAnnouncement, ...announcements].sort((a, b) => new Date(b.date) - new Date(a.date));
+                            setAnnouncements(updated);
+                            localStorage.setItem("cssc-announcements", JSON.stringify(updated));
                             setShowCreateForm(false);
                         }}
                     />
@@ -188,12 +204,13 @@ const Pengumuman = () => {
     );
 };
 
-// Create Announcement Modal Component
+// --- MODAL COMPONENT (CLEAN VERSION) ---
 const CreateAnnouncementModal = ({ user, onClose, onSubmit }) => {
     const [formData, setFormData] = useState({
         subject: "",
-        date: "",
-        content: ""
+        date: new Date().toISOString().split('T')[0], // Default today yyyy-mm-dd
+        content: "",
+        title: ""
     });
 
     const handleSubmit = (e) => {
@@ -201,83 +218,92 @@ const CreateAnnouncementModal = ({ user, onClose, onSubmit }) => {
         
         const newAnnouncement = {
             id: Date.now(),
-            title: formData.subject,
+            title: formData.title,
             content: formData.content,
             author: user.name,
-            authorRole: user.role || "Anggota", // Default to "Anggota" if no role specified
+            authorRole: user.role,
             subject: formData.subject,
-            date: formatDate(formData.date),
-            time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-            status: (user.role === "Dosen" || user.role === "Komting") ? "approved" : "Menunggu Persetujuan"
+            date: formData.date,
+            time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.',':'),
+            status: "approved"
         };
-
         onSubmit(newAnnouncement);
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const options = { 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric' 
-        };
-        return date.toLocaleDateString('id-ID', options);
-    };
-
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-3xl p-8 max-w-md w-full shadow-2xl">
-                <h2 className="text-2xl font-bold text-white text-center mb-6">
-                    Pengumuman
-                </h2>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl animate-fade-in-up">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Buat Pengumuman</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
                 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Input Title */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Judul Pengumuman</label>
+                        <input
+                            type="text"
+                            placeholder="Contoh: Perubahan Jadwal..."
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition"
+                            value={formData.title}
+                            onChange={(e) => setFormData({...formData, title: e.target.value})}
+                            required
+                        />
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <input
+                             <label className="block text-sm font-medium text-gray-700 mb-1">Mata Kuliah</label>
+                             <input
                                 type="text"
-                                placeholder="Mata Kuliah"
+                                placeholder="Basis Data / Umum"
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition"
                                 value={formData.subject}
                                 onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                                className="w-full p-3 rounded-xl border-2 border-yellow-400 bg-transparent text-white placeholder-gray-200 focus:outline-none focus:border-yellow-300"
                                 required
                             />
                         </div>
                         <div>
-                            <input
+                             <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                             <input
                                 type="date"
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition"
                                 value={formData.date}
                                 onChange={(e) => setFormData({...formData, date: e.target.value})}
-                                className="w-full p-3 rounded-xl border-2 border-yellow-400 bg-transparent text-white focus:outline-none focus:border-yellow-300"
                                 required
                             />
                         </div>
                     </div>
                     
                     <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-1">Isi Pesan</label>
                         <textarea
-                            placeholder="Masukkan Pengumuman"
+                            placeholder="Tulis detail pengumuman disini..."
+                            rows="4"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none transition resize-none"
                             value={formData.content}
                             onChange={(e) => setFormData({...formData, content: e.target.value})}
-                            rows="6"
-                            className="w-full p-3 rounded-xl border-2 border-yellow-400 bg-transparent text-white placeholder-gray-200 focus:outline-none focus:border-yellow-300 resize-none"
                             required
                         />
                     </div>
                     
-                    <div className="flex gap-4 pt-4">
+                    <div className="pt-2 flex gap-3">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl transition-colors"
+                            className="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
                         >
                             Batal
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 py-3 bg-green-800 hover:bg-green-900 text-yellow-300 font-bold rounded-xl transition-colors"
+                            className="flex-1 py-2.5 px-4 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition shadow-lg flex justify-center items-center gap-2"
                         >
-                            Ajukan Pengumuman
+                            <FaBullhorn className="text-amber-400"/>
+                            Posting
                         </button>
                     </div>
                 </form>

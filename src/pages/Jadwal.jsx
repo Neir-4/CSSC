@@ -1,269 +1,295 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+// import { Link } from "react-router-dom"; 
+// import { useAuth } from "../context/AuthContext"; 
 
 const Jadwal = () => {
-    const { user } = useAuth();
-    const [currentWeek, setCurrentWeek] = useState(0);
+    // const { user } = useAuth(); 
+    const user = { name: "Yehezkiel" }; // Dummy data
 
-    // Sample schedule data based on the image provided
+    const [currentWeek, setCurrentWeek] = useState(0);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const START_HOUR = 7; 
+    const END_HOUR = 18;  
+    const ROW_HEIGHT = 80; 
+
+    // === DATA JADWAL (UPDATED) ===
     const scheduleData = [
         {
-            day: "Senin",
-            date: "10",
+            dayName: "Senin",
             classes: [
                 {
                     time: "08:20 - 10:00",
                     subject: "Praktikum Basis Data",
-                    instructor: "Muhammad Syukron",
+                    instructor: "Muhammad Syukron Jazila",
                     room: "Lab 2",
-                    type: "praktikum",
-                    color: "bg-purple-100 border-purple-300 text-purple-800"
+                    color: "bg-purple-100 border-l-4 border-purple-500 text-purple-900"
                 },
                 {
                     time: "10:30 - 12:10",
-                    subject: "Komputerisasi Ekonomi & Bisnis",
-                    instructor: "Teknik Akbar Perkutanan",
-                    room: "SL 1",
-                    type: "teori",
-                    color: "bg-blue-100 border-blue-300 text-blue-800"
+                    subject: "Komputerisasi Ekon. & Bisnis",
+                    instructor: "Taufik Akbar Parluhutan SE, M.Si",
+                    room: "GL 1",
+                    color: "bg-blue-100 border-l-4 border-blue-500 text-blue-900"
                 }
             ]
         },
         {
-            day: "Selasa",
-            date: "11",
+            dayName: "Selasa",
             classes: [
                 {
                     time: "08:50 - 10:30",
-                    subject: "Praktikum Struktur Data",
-                    instructor: "Arya Debora Pengajaran",
-                    room: "Lab 2",
-                    type: "praktikum",
-                    color: "bg-green-100 border-green-300 text-green-800"
+                    subject: "IELTS Preparation",
+                    instructor: "Drs. Yulianus Harefa GradDipEd TESOL., MEd TESOL",
+                    room: "D-101",
+                    color: "bg-green-100 border-l-4 border-green-500 text-green-900"
                 },
                 {
                     time: "10:30 - 12:10",
-                    subject: "Praktikum Struktur Data",
-                    instructor: "Arya Debora Pengajaran",
+                    subject: "Praktikum Struktur Data (Lanjutan)",
+                    instructor: "Alya Debora Panggabean",
                     room: "Lab 2",
-                    type: "praktikum",
-                    color: "bg-green-100 border-green-300 text-green-800"
-                }
-            ]
-        },
-        {
-            day: "Rabu",
-            date: "12",
-            classes: [
-                {
-                    time: "08:00 - 10:30",
-                    subject: "Pemrograman Website",
-                    instructor: "Dr. Dewi Sartika Br Ginting S.Kom Nurrahmadiayah M.Kom",
-                    room: "D-103",
-                    type: "teori",
-                    color: "bg-yellow-100 border-yellow-400 text-yellow-800"
+                    color: "bg-green-100 border-l-4 border-green-500 text-green-900"
                 },
                 {
                     time: "13:50 - 16:20",
                     subject: "Kecerdasan Buatan",
-                    instructor: "Dr. Amelia S.T., M.Kom Dr. Fauzi Serafim Nainggolan S.Kom., M.Sc",
+                    instructor: "Dr. Amalia S.T., M.T. | Dr. Pauzi Ibrahim Nainggolan S.Komp., M.Sc.",
                     room: "D-104",
-                    type: "teori",
-                    color: "bg-orange-100 border-orange-300 text-orange-800"
+                    color: "bg-orange-100 border-l-4 border-orange-500 text-orange-900"
+                }
+            ]
+        },
+        {
+            dayName: "Rabu",
+            classes: [
+                {
+                    time: "08:00 - 10:30",
+                    subject: "Pemrograman Website",
+                    instructor: "Anandhini Medianty Nababan S.Kom., M.T | Insidini Fawwaz M.Kom",
+                    room: "D-103",
+                    color: "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900"
                 },
                 {
                     time: "14:40 - 17:10",
                     subject: "Basis Data",
-                    instructor: "Dr. Dewi Sartika Br Ginting S.Kom Insiden Fawwaz M.Kom",
+                    instructor: "Dr. Dewi Sartika Br Ginting S.Kom., M.Kom | Insidini Fawwaz M.Kom",
                     room: "D-103",
-                    type: "teori",
-                    color: "bg-pink-100 border-pink-300 text-pink-800"
+                    color: "bg-pink-100 border-l-4 border-pink-500 text-pink-900"
                 }
             ]
         },
         {
-            day: "Kamis",
-            date: "13",
+            dayName: "Kamis",
             classes: [
                 {
                     time: "08:00 - 09:40",
                     subject: "Etika Profesi",
-                    instructor: "Dr. Ir. Elvariany Musa Zainuddin S.T, M.T Dr. Daud Sihombing S.T, M.Kom",
+                    instructor: "Dr. Ir. Elviawaty Muisa Zamzami S.T., M.T., M.M., IPU | Dr. Eng Ade Candra S.T., M.Kom.",
                     room: "D-104",
-                    type: "teori",
-                    color: "bg-indigo-100 border-indigo-300 text-indigo-800"
+                    color: "bg-indigo-100 border-l-4 border-indigo-500 text-indigo-900"
                 },
                 {
-                    time: "08:00 - 09:40",
+                    time: "10:00 - 12:00", 
                     subject: "Wirausaha Digital",
-                    instructor: "Dr. T. Henry Fabriana S.Kom., M.Kom Dr. Fauzan Nainggolan S.Kom., M.Sc",
+                    instructor: "Dr. T. Henny Febriana Harumy S.Kom., M.Kom | Dr. Fauzan Nurahmadi S.Kom., M.Cs",
                     room: "D-104",
-                    type: "teori",
-                    color: "bg-teal-100 border-teal-300 text-teal-800"
+                    color: "bg-teal-100 border-l-4 border-teal-500 text-teal-900"
                 }
             ]
         },
         {
-            day: "Jumat",
-            date: "14",
+            dayName: "Jumat",
             classes: [
                 {
                     time: "10:30 - 12:10",
-                    subject: "Praktikum Pemrograman Website",
-                    instructor: "Muhammad Dzikrullah Arfagy",
+                    subject: "Prak. Pemrograman Website",
+                    instructor: "Muhammad Dzakwan Attaqiy",
                     room: "Lab 3",
-                    type: "praktikum",
-                    color: "bg-cyan-100 border-cyan-300 text-cyan-800"
+                    color: "bg-cyan-100 border-l-4 border-cyan-500 text-cyan-900"
                 },
                 {
                     time: "13:50 - 16:20",
                     subject: "Struktur Data",
-                    instructor: "Asandimitra Modestus Nainggolan S.Kom.,M.T Insiden Fawwaz M.Kom",
+                    instructor: "Anandhini Medianty Nababan S.Kom., M.T | Insidini Fawwaz M.Kom",
                     room: "D-101",
-                    type: "teori",
-                    color: "bg-emerald-100 border-emerald-300 text-emerald-800"
+                    color: "bg-emerald-100 border-l-4 border-emerald-500 text-emerald-900"
                 }
             ]
-        }
+        },
+        { dayName: "Sabtu", classes: [] } 
     ];
 
-    const timeSlots = [
-        "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", 
-        "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
-    ];
+    const timeSlots = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => {
+        const hour = START_HOUR + i;
+        return `${hour.toString().padStart(2, '0')}:00`;
+    });
 
-    const navigateWeek = (direction) => {
-        setCurrentWeek(prev => prev + direction);
-    };
-
-    const getCurrentWeekDates = () => {
-        const today = new Date();
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay() + 1 + (currentWeek * 7));
+    const getDaysInWeek = () => {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); 
+        const diffToMonday = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1) + (currentWeek * 7);
         
-        return scheduleData.map((day, index) => {
-            const date = new Date(startOfWeek);
-            date.setDate(startOfWeek.getDate() + index);
-            return {
-                ...day,
-                fullDate: date,
-                dateNum: date.getDate()
-            };
-        });
+        const monday = new Date(now.setDate(diffToMonday));
+        const days = [];
+
+        for (let i = 0; i < 6; i++) { 
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + i);
+            const dayNameIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][date.getDay()];
+            const scheduleForDay = scheduleData.find(s => s.dayName === dayNameIndo) || { classes: [] };
+            days.push({
+                dateObj: date,
+                dayName: dayNameIndo,
+                dateNum: date.getDate(),
+                classes: scheduleForDay.classes
+            });
+        }
+        return days;
     };
 
-    const weekDates = getCurrentWeekDates();
-    const currentDate = new Date();
-    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-                       "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const weekDays = getDaysInWeek();
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    const calculateTopPosition = (timeString) => {
+        const [hour, minute] = timeString.split(":").map(Number);
+        const totalMinutesFromStart = (hour - START_HOUR) * 60 + minute;
+        return (totalMinutesFromStart / 60) * ROW_HEIGHT;
+    };
+
+    const calculateHeight = (startTime, endTime) => {
+        const startTop = calculateTopPosition(startTime);
+        const endTop = calculateTopPosition(endTime);
+        return endTop - startTop;
+    };
+
+    const getCurrentTimePosition = () => {
+        const hour = currentTime.getHours();
+        const minute = currentTime.getMinutes();
+        if (hour < START_HOUR || hour > END_HOUR) return null; 
+        const totalMinutesFromStart = (hour - START_HOUR) * 60 + minute;
+        return (totalMinutesFromStart / 60) * ROW_HEIGHT;
+    };
+
+    const currentTimeTop = getCurrentTimePosition();
 
     return (
-        <div className="min-h-screen bg-[#f5f5f0] pt-20 pb-10 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#f5f5f0] pt-24 pb-10 px-4 sm:px-6 lg:px-8 font-sans">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                
+                {/* --- HEADER --- */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-[#1e1e1e] mb-2">
-                            Jadwal Kelas Mu
-                        </h1>
+                        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Jadwal Kelas</h1>
+                        
+                        {/* UPDATE: Nama Mahasiswa tanpa padding (sesuai request) */}
                         <div className="flex items-center gap-2 text-sm text-[#4b4b4b]">
-                            <span className="bg-yellow-300 px-3 py-1 rounded-full text-[#1e1e1e] font-semibold">
+                            <h1 className="">Halo,   
+                            <span className="rounded-full text-[#1e1e1e] font-semibold">
                                 {user?.name || "Yehezkiel"}
                             </span>
+                            </h1>
                         </div>
                     </div>
                     
-                    {/* Week Navigation */}
-                    <div className="flex items-center gap-4">
-                        <button 
-                            onClick={() => navigateWeek(-1)}
-                            className="p-2 rounded-full hover:bg-white/50 transition-colors"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
+                    {/* Navigasi Minggu */}
+                    <div className="flex items-center bg-white p-1.5 rounded-full shadow-md border border-gray-200">
+                        <button onClick={() => setCurrentWeek(p => p - 1)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                         </button>
-                        <span className="text-lg font-semibold text-[#1e1e1e] min-w-[120px] text-center">
-                            {monthNames[weekDates[0]?.fullDate.getMonth()]} {weekDates[0]?.fullDate.getFullYear()}
+                        <span className="px-4 font-semibold text-gray-700 min-w-[140px] text-center">
+                            {monthNames[weekDays[0].dateObj.getMonth()]} {weekDays[0].dateObj.getFullYear()}
                         </span>
-                        <button 
-                            onClick={() => navigateWeek(1)}
-                            className="p-2 rounded-full hover:bg-white/50 transition-colors"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                        <button onClick={() => setCurrentWeek(p => p + 1)} className="p-2 hover:bg-gray-100 rounded-full transition">
+                            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </button>
                     </div>
                 </div>
 
-                {/* Schedule Grid */}
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                    {/* Desktop View */}
-                    <div className="hidden lg:block">
-                        <div className="grid grid-cols-6 bg-[#8db89a] text-white">
-                            <div className="p-4 text-center font-semibold border-r border-white/20">
-                                <div className="text-xs">GMT +7</div>
-                                <div className="text-sm mt-1">Waktu</div>
-                            </div>
-                            {weekDates.map((day, index) => (
-                                <div key={index} className="p-4 text-center border-r border-white/20 last:border-r-0">
-                                    <div className="font-semibold text-lg">{day.day}</div>
-                                    <div className="text-2xl font-bold mt-1">{day.dateNum}</div>
-                                </div>
-                            ))}
+                {/* --- DESKTOP VIEW (GRID) --- */}
+                <div className="hidden lg:block bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative">
+                    
+                    {/* Header Hari (Sticky) */}
+                    <div className="grid grid-cols-[80px_1fr_1fr_1fr_1fr_1fr_1fr] border-b border-gray-200 sticky top-0 z-30 bg-white">
+                        <div className="p-4 text-center border-r border-gray-100 bg-gray-50 flex items-center justify-center">
+                            <span className="text-xs font-bold text-gray-400">GMT+7</span>
                         </div>
-                        
-                        <div className="grid grid-cols-6 min-h-[600px]">
-                            {/* Time Column */}
-                            <div className="border-r border-gray-200">
-                                {timeSlots.map((time, index) => (
-                                    <div key={index} className="h-16 border-b border-gray-100 flex items-center justify-center text-sm text-[#4b4b4b] font-medium">
+                        {weekDays.map((day, idx) => {
+                            const isToday = day.dateObj.getDate() === new Date().getDate() && day.dateObj.getMonth() === new Date().getMonth();
+                            return (
+                                <div key={idx} className={`p-3 text-center border-r border-gray-100 last:border-r-0 ${isToday ? 'bg-amber-50' : ''}`}>
+                                    <p className={`text-sm font-medium ${isToday ? 'text-amber-600' : 'text-gray-500'}`}>{day.dayName}</p>
+                                    <div className={`w-10 h-10 mx-auto mt-1 flex items-center justify-center rounded-full text-lg font-bold ${isToday ? 'bg-amber-400 text-white shadow-md' : 'text-gray-800'}`}>
+                                        {day.dateNum}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Area Grid Jadwal Scrollable */}
+                    <div className="relative overflow-y-auto max-h-[700px]">
+                        {/* Background Grid Lines */}
+                        <div className="absolute inset-0 grid grid-cols-[80px_1fr_1fr_1fr_1fr_1fr_1fr]">
+                            <div className="border-r border-gray-200 bg-gray-50">
+                                {timeSlots.map((time, idx) => (
+                                    <div key={idx} className="border-b border-gray-200 text-xs text-gray-400 font-medium pr-3 flex items-start justify-end pt-1" style={{ height: `${ROW_HEIGHT}px` }}>
                                         {time}
                                     </div>
                                 ))}
                             </div>
-                            
-                            {/* Days Columns */}
-                            {weekDates.map((day, dayIndex) => (
-                                <div key={dayIndex} className="border-r border-gray-200 last:border-r-0 relative">
-                                    {timeSlots.map((time, timeIndex) => (
-                                        <div key={timeIndex} className="h-16 border-b border-gray-100"></div>
+                            {weekDays.map((_, idx) => (
+                                <div key={idx} className="border-r border-gray-100 last:border-r-0 relative">
+                                    {timeSlots.map((_, tIdx) => (
+                                        <div key={tIdx} className="border-b border-gray-50 w-full" style={{ height: `${ROW_HEIGHT}px` }}></div>
                                     ))}
-                                    
-                                    {/* Classes */}
-                                    {day.classes.map((classItem, classIndex) => {
-                                        const startTime = classItem.time.split(' - ')[0];
-                                        const endTime = classItem.time.split(' - ')[1];
-                                        const startHour = parseInt(startTime.split(':')[0]);
-                                        const startMinute = parseInt(startTime.split(':')[1]);
-                                        const endHour = parseInt(endTime.split(':')[0]);
-                                        const endMinute = parseInt(endTime.split(':')[1]);
-                                        
-                                        const startPosition = ((startHour - 6) * 64) + (startMinute / 60 * 64);
-                                        const duration = ((endHour - startHour) * 64) + ((endMinute - startMinute) / 60 * 64);
-                                        
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Indikator Waktu Sekarang (Garis Merah) */}
+                        {currentTimeTop !== null && (
+                            <div 
+                                className="absolute left-[80px] right-0 border-t-2 border-red-500 z-20 pointer-events-none flex items-center"
+                                style={{ top: `${currentTimeTop}px` }}
+                            >
+                                <div className="w-2 h-2 bg-red-500 rounded-full -ml-1"></div>
+                            </div>
+                        )}
+
+                        {/* Event Cards Layer */}
+                        <div className="absolute inset-0 grid grid-cols-[80px_1fr_1fr_1fr_1fr_1fr_1fr] pointer-events-none">
+                            <div></div> 
+                            
+                            {weekDays.map((day, colIdx) => (
+                                <div key={colIdx} className="relative h-full">
+                                    {day.classes.map((cls, clsIdx) => {
+                                        const [start, end] = cls.time.split(" - ");
                                         return (
                                             <div
-                                                key={classIndex}
-                                                className={`absolute left-1 right-1 rounded-lg border-2 p-2 ${classItem.color} shadow-sm`}
+                                                key={clsIdx}
+                                                className={`absolute left-1 right-1 rounded-lg p-2.5 shadow-sm hover:shadow-md transition-shadow pointer-events-auto cursor-pointer flex flex-col justify-start overflow-hidden ${cls.color}`}
                                                 style={{
-                                                    top: `${startPosition}px`,
-                                                    height: `${duration}px`,
+                                                    top: `${calculateTopPosition(start)}px`,
+                                                    height: `${calculateHeight(start, end)}px`,
                                                     zIndex: 10
                                                 }}
                                             >
-                                                <div className="text-xs font-bold mb-1 leading-tight">
-                                                    {classItem.subject}
-                                                </div>
-                                                <div className="text-xs opacity-90 leading-tight">
-                                                    {classItem.instructor}
-                                                </div>
-                                                <div className="text-xs font-medium mt-1">
-                                                    {classItem.room}
-                                                </div>
-                                                <div className="text-xs font-medium">
-                                                    {classItem.time}
+                                                <div className="font-bold text-xs sm:text-sm leading-tight mb-1">{cls.subject}</div>
+                                                <div className="text-[10px] sm:text-xs opacity-90 leading-tight mb-auto">{cls.instructor}</div>
+                                                
+                                                <div className="flex justify-between items-end mt-1">
+                                                     <div className="text-[10px] font-semibold px-1.5 py-0.5 bg-white/40 rounded backdrop-blur-sm">
+                                                        {cls.room}
+                                                    </div>
+                                                    <div className="text-[10px] font-medium opacity-80">
+                                                        {start}
+                                                    </div>
                                                 </div>
                                             </div>
                                         );
@@ -271,44 +297,66 @@ const Jadwal = () => {
                                 </div>
                             ))}
                         </div>
+                        <div style={{ height: `${timeSlots.length * ROW_HEIGHT}px` }}></div>
                     </div>
+                </div>
 
-                    {/* Mobile View */}
-                    <div className="lg:hidden">
-                        {weekDates.map((day, dayIndex) => (
-                            <div key={dayIndex} className="border-b border-gray-200 last:border-b-0">
-                                <div className="bg-[#8db89a] text-white p-4 flex items-center justify-between">
-                                    <div>
-                                        <div className="font-semibold text-lg">{day.day}</div>
-                                        <div className="text-sm opacity-90">{day.dateNum} {monthNames[day.fullDate.getMonth()]}</div>
+                {/* --- MOBILE VIEW (LIST) --- */}
+                <div className="lg:hidden space-y-6">
+                    {weekDays.map((day, idx) => {
+                        const isToday = day.dateObj.getDate() === new Date().getDate() && day.dateObj.getMonth() === new Date().getMonth();
+                        
+                        return (
+                            <div key={idx} className={`rounded-2xl border overflow-hidden ${isToday ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 bg-white'}`}>
+                                <div className={`px-5 py-3 flex items-center justify-between ${isToday ? 'bg-amber-300' : 'bg-[#8db89a]'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-2xl font-bold ${isToday ? 'text-black' : 'text-white'}`}>{day.dateNum}</span>
+                                        <div>
+                                            <div className={`font-bold text-lg leading-none ${isToday ? 'text-black' : 'text-white'}`}>{day.dayName}</div>
+                                            <div className={`text-xs ${isToday ? 'text-black/70' : 'text-white/80'}`}>{monthNames[day.dateObj.getMonth()]}</div>
+                                        </div>
                                     </div>
-                                    <div className="text-right text-sm">
-                                        {day.classes.length} kelas
+                                    <div className={`text-sm font-medium px-3 py-1 rounded-full ${isToday ? 'bg-white/30 text-black' : 'bg-white/20 text-white'}`}>
+                                        {day.classes.length} Kelas
                                     </div>
                                 </div>
-                                
-                                <div className="p-4 space-y-3">
+
+                                <div className="p-4 space-y-3 bg-white">
                                     {day.classes.length > 0 ? (
-                                        day.classes.map((classItem, classIndex) => (
-                                            <div key={classIndex} className={`rounded-lg border-2 p-3 ${classItem.color}`}>
+                                        day.classes.map((cls, clsIdx) => (
+                                            <div key={clsIdx} className={`rounded-xl p-4 border-l-4 shadow-sm ${cls.color}`}>
                                                 <div className="flex justify-between items-start mb-2">
-                                                    <div className="font-bold text-sm">{classItem.subject}</div>
-                                                    <div className="text-xs font-medium">{classItem.time}</div>
+                                                    <h3 className="font-bold text-gray-900">{cls.subject}</h3>
+                                                    <span className="text-xs font-bold px-2 py-1 bg-white/50 rounded-md whitespace-nowrap">
+                                                        {cls.time}
+                                                    </span>
                                                 </div>
-                                                <div className="text-xs opacity-90 mb-1">{classItem.instructor}</div>
-                                                <div className="text-xs font-medium">{classItem.room}</div>
+                                                <p className="text-xs text-gray-700 mb-3 flex items-center gap-1">
+                                                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                                    {cls.instructor}
+                                                </p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-semibold px-2 py-1 bg-white rounded border border-gray-100 flex items-center gap-1">
+                                                        <svg className="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                        {cls.room}
+                                                    </span>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="text-center text-[#4b4b4b] py-8">
-                                            Tidak ada kelas hari ini
+                                        <div className="text-center py-6">
+                                            <div className="inline-block p-3 rounded-full bg-gray-50 mb-2">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                            </div>
+                                            <p className="text-gray-400 text-sm">Tidak ada jadwal kuliah.</p>
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        );
+                    })}
                 </div>
+
             </div>
         </div>
     );
