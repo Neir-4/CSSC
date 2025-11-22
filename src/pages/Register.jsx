@@ -35,7 +35,7 @@ const Register = () => {
         setError("");
 
         if (!form.role) {
-            setError("Pilih apakah Anda Dosen atau Mahasiswa.");
+            setError("Pilih peran Anda: Dosen, Komting, atau Mahasiswa.");
             return;
         }
         if (!form.identityNumber) {
@@ -49,7 +49,9 @@ const Register = () => {
     };
 
     const identityLabel =
-        form.role === "dosen" ? "NIP" : form.role === "mahasiswa" ? "NIM" : "Nomor Identitas";
+        form.role === "dosen" ? "NIP" : 
+        form.role === "komting" ? "NIM" :
+        form.role === "mahasiswa" ? "NIM" : "Nomor Identitas";
 
     return (
         <>
@@ -125,26 +127,39 @@ const Register = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleRoleToggle("dosen")}
-                                        className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 ${form.role === "dosen" ? "bg-yellow-300 text-[#243e36]" : "bg-transparent"}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 px-2 py-2 ${form.role === "dosen" ? "bg-yellow-300 text-[#243e36]" : "bg-transparent"}`}
                                     >
                                         <input
                                             type="checkbox"
                                             checked={form.role === "dosen"}
                                             readOnly
-                                            className="w-4 h-4 accent-[#243e36] bg-transparent border-white"
+                                            className="w-3 h-3 accent-[#243e36] bg-transparent border-white"
                                         />
                                         <span>Dosen</span>
                                     </button>
                                     <button
                                         type="button"
+                                        onClick={() => handleRoleToggle("komting")}
+                                        className={`flex-1 flex items-center justify-center gap-2 px-2 py-2 border-l border-yellow-300 ${form.role === "komting" ? "bg-yellow-300 text-[#243e36]" : "bg-transparent"}`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={form.role === "komting"}
+                                            readOnly
+                                            className="w-3 h-3 accent-[#243e36] bg-transparent border-white"
+                                        />
+                                        <span>Komting</span>
+                                    </button>
+                                    <button
+                                        type="button"
                                         onClick={() => handleRoleToggle("mahasiswa")}
-                                        className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border-l border-yellow-300 ${form.role === "mahasiswa" ? "bg-yellow-300 text-[#243e36]" : "bg-transparent"}`}
+                                        className={`flex-1 flex items-center justify-center gap-2 px-2 py-2 border-l border-yellow-300 ${form.role === "mahasiswa" ? "bg-yellow-300 text-[#243e36]" : "bg-transparent"}`}
                                     >
                                         <input
                                             type="checkbox"
                                             checked={form.role === "mahasiswa"}
                                             readOnly
-                                            className="w-4 h-4 accent-[#243e36] bg-transparent border-white"
+                                            className="w-3 h-3 accent-[#243e36] bg-transparent border-white"
                                         />
                                         <span>Mahasiswa</span>
                                     </button>

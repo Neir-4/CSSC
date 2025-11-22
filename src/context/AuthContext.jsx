@@ -9,9 +9,16 @@ export const AuthProvider = ({ children }) => {
   });
 
   const register = (data) => {
-    localStorage.setItem("cssc-registered-user", JSON.stringify(data));
-    setUser(data);
-    localStorage.setItem("cssc-current-user", JSON.stringify(data));
+    // Map role to proper format for announcement system
+    const userWithRole = {
+      ...data,
+      role: data.role === "dosen" ? "Dosen" : 
+            data.role === "mahasiswa" ? "Anggota" : 
+            data.role === "komting" ? "Komting" : "Anggota"
+    };
+    localStorage.setItem("cssc-registered-user", JSON.stringify(userWithRole));
+    setUser(userWithRole);
+    localStorage.setItem("cssc-current-user", JSON.stringify(userWithRole));
   };
 
   const login = ({ name, email, password }) => {
@@ -27,9 +34,17 @@ export const AuthProvider = ({ children }) => {
       registered.password === password &&
       registered.name === name
     ) {
-      setUser(registered);
-      localStorage.setItem("cssc-current-user", JSON.stringify(registered));
-      return { success: true, user: registered };
+      // Ensure role mapping is consistent
+      const userWithRole = {
+        ...registered,
+        role: registered.role === "dosen" ? "Dosen" : 
+              registered.role === "mahasiswa" ? "Anggota" : 
+              registered.role === "komting" ? "Komting" : 
+              registered.role || "Anggota"
+      };
+      setUser(userWithRole);
+      localStorage.setItem("cssc-current-user", JSON.stringify(userWithRole));
+      return { success: true, user: userWithRole };
     }
 
     return { success: false, reason: "INVALID_CREDENTIALS" };
