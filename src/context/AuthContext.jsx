@@ -50,13 +50,26 @@ export const AuthProvider = ({ children }) => {
     return { success: false, reason: "INVALID_CREDENTIALS" };
   };
 
+  // ✅ TAMBAHAN BARU: Update Profil
+  const updateUser = (newData) => {
+    setUser((prev) => {
+      const updated = { ...prev, ...newData };
+
+      // Simpan ke localStorage agar tidak hilang setelah refresh
+      localStorage.setItem("cssc-current-user", JSON.stringify(updated));
+      localStorage.setItem("cssc-registered-user", JSON.stringify(updated));
+
+      return updated;
+    });
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("cssc-current-user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider value={{ user, register, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
