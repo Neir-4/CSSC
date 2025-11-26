@@ -7,6 +7,7 @@ import Jadwal from "./pages/Jadwal";
 import Pengumuman from "./pages/Pengumuman";
 import Materi from "./pages/Materi";
 import MateriDetail from "./pages/MateriDetail";
+import MateriPertemuan from "./pages/MateriPertemuan";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
@@ -65,6 +66,15 @@ const AppLayout = () => {
             </RequireAuth>
           }
         />
+        <Route
+          path="/Materi/:id/:pertemuan"
+          element={
+            <RequireAuth>
+              <MateriPertemuan />
+            </RequireAuth>
+          }
+        />
+
         <Route
           path="/Pengumuman"
           element={
